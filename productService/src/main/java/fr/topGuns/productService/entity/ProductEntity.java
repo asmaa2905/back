@@ -1,10 +1,16 @@
 package fr.topGuns.productService.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "product")
 public class ProductEntity {
@@ -20,5 +26,7 @@ public class ProductEntity {
         private Long price;
         @Column(nullable = false)
         private String picture;
+        @Column
+        private int idUser;
 
 }

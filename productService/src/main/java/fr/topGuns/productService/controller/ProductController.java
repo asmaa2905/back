@@ -4,11 +4,11 @@ import fr.topGuns.productService.dto.ProductDto;
 import fr.topGuns.productService.entity.ProductEntity;
 import fr.topGuns.productService.mapper.ProductMapper;
 import fr.topGuns.productService.service.IProductService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 @Slf4j
 public class ProductController {
@@ -26,7 +26,7 @@ public class ProductController {
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductDto> getUsers() {
+    public List<ProductDto> getProducts() {
         return  productService.getAllProducts().stream()
                 .filter(product -> (product.getQuantity()>0))
                 .sorted(Comparator.comparingLong(ProductEntity::getId))
@@ -42,8 +42,15 @@ public class ProductController {
 
     @GetMapping("/byProductName")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDto userByUsername(@RequestParam(name = "productName") String productName){
+    public ProductDto productByProductName(@RequestParam(name = "productName") String productName){
         return productMapper.toDto(productService.getProductByProductName(productName));
+    }
+
+    @GetMapping("/user/{idUser}")
+    public ResponseEntity<List<ProductDto>> findAllProducts(@PathVariable("idUser") Long idUser){
+        return  ResponseEntity.ok(productService.findAllProductsByUser(idUser).stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/create")

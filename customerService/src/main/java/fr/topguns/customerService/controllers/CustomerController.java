@@ -2,6 +2,7 @@ package fr.topguns.customerService.controllers;
 
 import fr.topguns.customerService.dto.CustomerDto;
 import fr.topguns.customerService.entities.CustomerEntity;
+import fr.topguns.customerService.entities.CustomerResponse;
 import fr.topguns.customerService.mapper.CustomerMapper;
 import fr.topguns.customerService.services.ICustomerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -52,7 +54,10 @@ public class CustomerController {
     public CustomerDto userByUsername(@RequestParam(name = "username") String username){
         return customerMapper.toDto(customerService.getUserByUsername(username));
     }
-
+    @GetMapping("/withProduct/{id}")
+    public ResponseEntity<CustomerResponse> findALlCustomers(@PathVariable("idUser") Long id){
+        return ResponseEntity.ok(customerService.findCustomersWithProduct(id));
+    }
     @PostMapping("/createUser")
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerDto createUser(@RequestBody CustomerDto user){

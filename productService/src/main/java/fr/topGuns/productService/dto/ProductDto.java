@@ -12,5 +12,5 @@ public class ProductDto {
     private int quantity;
     private Long price;
     private String picture;
-
+    private int idUser;
 }

@@ -6,7 +6,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -33,6 +32,10 @@ public class ProductServiceImpl implements IProductService{
         return productRepository.findByProductName(username);
     }
 
+    @Override
+    public List<ProductEntity> findAllProductsByUser(Long idUser){
+        return productRepository.findAllByIdUser(idUser);
+    }
     @Override
     public ProductEntity createProduct(ProductEntity product){
         return productRepository.save(product);

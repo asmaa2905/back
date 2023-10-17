@@ -1,6 +1,8 @@
 package fr.topguns.customerService.services;
 
+import fr.topguns.customerService.client.ProductClient;
 import fr.topguns.customerService.entities.CustomerEntity;
+import fr.topguns.customerService.entities.CustomerResponse;
 import fr.topguns.customerService.repositories.ICustomerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class CustomerServiceImpl implements ICustomerService{
     @Autowired
     private ICustomerRepository userRepository;
+    @Autowired
+    private ProductClient productClient;
     @Override
     public List<CustomerEntity> getAllUsers() {
         return userRepository.findAll();
@@ -36,6 +40,29 @@ public class CustomerServiceImpl implements ICustomerService{
         return userRepository.findByEmail(email);
     }
 
+    @Override
+    public CustomerResponse findCustomersWithProduct(Long id){
+        var customer = userRepository.findById(id).orElse(CustomerEntity.builder()
+                        .username("not found")
+                        .email("not found")
+                        .password("not found")
+                        .createDate(LocalDateTime.now())
+                        .editDate(LocalDateTime.now())
+                        .isAdmin(0)
+                        .isActive(0)
+                        .build());
+        var product = productClient.findAllProductsByUser(id);
+        return CustomerResponse.builder()
+                .username(customer.getUsername())
+                .email(customer.getEmail())
+                .password(customer.getPassword())
+                .createDate(customer.getCreateDate())
+                .editDate(customer.getEditDate())
+                .isAdmin(customer.getIsAdmin())
+                .isActive(customer.getIsActive())
+                .products(product)
+                .build();
+    }
     @Override
     public CustomerEntity createUser(CustomerEntity user){
         return userRepository.save(user);
